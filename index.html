@@ -340,14 +340,14 @@ function LineCanvas({ datasets, labels, tooltipUnit, kind = "line", referenceVal
 }
 
 function Tracker({ icon, color, label, value, goal, unit, children }) {
-  const pct = goal ? clamp(((value || 0) / goal) * 100, 0, 100) : null;
+  const pct = goal ? clamp(((value || 0) / goal) * 100, 0, 100) : 0;
   return (
     <div className="bct-tracker">
       <div className={`bct-tracker-icon bct-swatch-${color}`}>{icon}</div>
       <div className="bct-tracker-body">
         <p className="bct-tracker-label">{label}</p>
         <p className="bct-tracker-value">{value != null ? value : "—"}{goal ? <span className="bct-tracker-goal"> / {goal} {unit}</span> : <span className="bct-tracker-goal"> {unit}</span>}</p>
-        {pct != null && <div className="bct-tracker-bar"><div className={`bct-tracker-bar-fill bct-swatch-${color}`} style={{ width: `${pct}%` }} /></div>}
+        <div className="bct-tracker-bar"><div className={`bct-tracker-bar-fill bct-swatch-${color}`} style={{ width: `${pct}%` }} /></div>
         {children}
       </div>
     </div>
