@@ -98,7 +98,7 @@
   .bct-tracker-goal { font-size: 12px; font-weight: 400; color: var(--ink-soft); }
   .bct-tracker-bar { height: 6px; border-radius: 4px; background: var(--line); overflow: hidden; margin-bottom: 8px; }
   .bct-tracker-bar-fill { height: 100%; border-radius: 4px; }
-  .bct-quickadd { display: flex; gap: 5px; flex-wrap: wrap; }
+  .bct-quickadd { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
   .bct-chip { font-family: 'Karla', sans-serif; font-size: 11.5px; font-weight: 600; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 4px 9px; cursor: pointer; }
   .bct-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .bct-range-pills { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -293,6 +293,14 @@ function Icon({ name, size = 16 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d={ICON_PATHS[name]} />
+    </svg>
+  );
+}
+function GearIcon({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="10.66,5.13 10.17,2.58 13.83,2.58 13.34,5.13 15.91,6.20 17.37,4.04 19.96,6.63 17.80,8.09 18.87,10.66 21.42,10.17 21.42,13.83 18.87,13.34 17.80,15.91 19.96,17.37 17.37,19.96 15.91,17.80 13.34,18.87 13.83,21.42 10.17,21.42 10.66,18.87 8.09,17.80 6.63,19.96 4.04,17.37 6.20,15.91 5.13,13.34 2.58,13.83 2.58,10.17 5.13,10.66 6.20,8.09 4.04,6.63 6.63,4.04 8.09,6.20" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
@@ -510,7 +518,7 @@ function App() {
             <h1 className="bct-title">The Body Log</h1>
           </div>
           <div className="bct-header-actions">
-            <button className="bct-icon-btn" onClick={() => setShowSettings(true)}>⚙</button>
+            <button className="bct-icon-btn" onClick={() => setShowSettings(true)} aria-label="Settings"><GearIcon /></button>
             <button className="bct-btn-primary" onClick={openNewEntry}>+ New entry</button>
           </div>
         </header>
@@ -564,12 +572,25 @@ function App() {
                 <button className="bct-chip" onClick={() => bumpToday("waterOz", 32)}>+32oz</button>
                 {waterOz > 0 && <button className="bct-chip subtle" onClick={() => setTodayField("waterOz", 0)}>reset</button>}
               </div>
+              <input type="number" inputMode="numeric" className="bct-inline-input" placeholder="or type exact oz" value={waterOz || ""} onChange={(e) => setTodayField("waterOz", e.target.value === "" ? 0 : parseFloat(e.target.value))} />
             </Tracker>
             <Tracker icon={<Icon name="flame" />} color="gold" label="Calories" value={todayEntry?.calories ?? null} goal={settings.calorieGoal} unit="kcal">
-              <input type="number" inputMode="numeric" className="bct-inline-input" placeholder="log kcal" value={todayEntry?.calories ?? ""} onChange={(e) => setTodayField("calories", e.target.value === "" ? null : parseFloat(e.target.value))} />
+              <div className="bct-quickadd">
+                <button className="bct-chip" onClick={() => bumpToday("calories", 100)}>+100</button>
+                <button className="bct-chip" onClick={() => bumpToday("calories", 250)}>+250</button>
+                <button className="bct-chip" onClick={() => bumpToday("calories", 500)}>+500</button>
+                {todayEntry?.calories ? <button className="bct-chip subtle" onClick={() => setTodayField("calories", null)}>reset</button> : null}
+              </div>
+              <input type="number" inputMode="numeric" className="bct-inline-input" placeholder="or type exact kcal" value={todayEntry?.calories ?? ""} onChange={(e) => setTodayField("calories", e.target.value === "" ? null : parseFloat(e.target.value))} />
             </Tracker>
             <Tracker icon={<Icon name="egg" />} color="rose" label="Protein" value={todayEntry?.protein ?? null} goal={settings.proteinGoal} unit="g">
-              <input type="number" inputMode="numeric" className="bct-inline-input" placeholder="log grams" value={todayEntry?.protein ?? ""} onChange={(e) => setTodayField("protein", e.target.value === "" ? null : parseFloat(e.target.value))} />
+              <div className="bct-quickadd">
+                <button className="bct-chip" onClick={() => bumpToday("protein", 10)}>+10g</button>
+                <button className="bct-chip" onClick={() => bumpToday("protein", 20)}>+20g</button>
+                <button className="bct-chip" onClick={() => bumpToday("protein", 30)}>+30g</button>
+                {todayEntry?.protein ? <button className="bct-chip subtle" onClick={() => setTodayField("protein", null)}>reset</button> : null}
+              </div>
+              <input type="number" inputMode="numeric" className="bct-inline-input" placeholder="or type exact grams" value={todayEntry?.protein ?? ""} onChange={(e) => setTodayField("protein", e.target.value === "" ? null : parseFloat(e.target.value))} />
             </Tracker>
           </div>
         </div>
